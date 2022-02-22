@@ -1,5 +1,5 @@
 module.exports = {
-  purge: ['./public/**/*.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  purge: ["./src/**/*.vue", "./public/**/*.vue"],
   darkMode: false,
   theme: {
     extend: {
