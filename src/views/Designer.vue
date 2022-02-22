@@ -23,6 +23,7 @@
           :sort="false"
           item-key="id"
           @change="log"
+          :clone="cloneElement"
           class="flex flex-col gap-y-3 items-start"
           v-if="menuOpen"
         >
@@ -43,16 +44,17 @@
           handle=".handle"
           group="test"
           item-key="id"
-          @change="generateID"
+          @change="generateID()"
         >
-          <template #item="{ element }" >
+          <template #item="{ element }">
             <div>
               <div class="flex justify-between pr-4">
                 <CIcon
                   :icon="cilX"
                   @click="removeItem(element.id)"
-                  class="w-6 cursor-pointer text-gray-500 hover:text-gray-700"/>
-              
+                  class="w-6 cursor-pointer text-gray-500 hover:text-gray-700"
+                />
+
                 <CIcon
                   v-if="list2.length > 1"
                   :icon="cilElevator"
@@ -60,10 +62,12 @@
                 />
               </div>
 
-              <section @click="open = true" class="" v-html="element.components"></section>
+              <section
+                @click="open = true"
+                v-html="element.components"
+              ></section>
             </div>
           </template>
-
         </draggable>
 
         <div
@@ -72,10 +76,9 @@
         >
           Drop your elements here
         </div>
-        
       </div>
     </div>
-    <Slider :open="open" @close-slider="open = false"/>
+    <Slider :open="open" @close-slider="open = false" />
   </div>
 </template>
 
@@ -87,7 +90,7 @@ import {
   cilElevator,
   cilChevronBottom,
   cilChevronTop,
-  cilX
+  cilX,
 } from "@coreui/icons";
 import Slider from "../components/Slider.vue";
 
@@ -98,7 +101,7 @@ export default {
   components: {
     draggable,
     CIcon,
-    Slider
+    Slider,
   },
   setup() {
     const menuOpen = ref(null);
@@ -120,22 +123,19 @@ export default {
       list2.value.forEach((element) => {
         element.id = ID;
         ID++;
-        console.log(element.id)
-      })
-      console.log("test")
-      // console.log(list2.value)
-    }
+        console.log(element.id);
+      });
+    };
 
-    const removeItem = function(id) {
+    const removeItem = function (id) {
       const newList = list2.value.filter((element) => {
-        element.id !== id;
-       console.log(element.id);
-      })
-      console.log(newList);
-      console.log(list2.value)
+        if (element.id !== id) {
+          return element;
+        }
+        console.log(element.id);
+      });
       list2.value = newList;
-
-    }
+    };
 
     const getFile = function () {
       let urls = ["1.html", "2.html"];
@@ -156,9 +156,15 @@ export default {
       }
     };
 
+    const cloneElement = function (original) {
+      const element = { ...original };
+      return element;
+    };
+
     onMounted(() => {
       getFile();
     });
+
     return {
       list1,
       list2,
@@ -172,6 +178,7 @@ export default {
       open,
       removeItem,
       generateID,
+      cloneElement,
     };
   },
   methods: {
