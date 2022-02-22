@@ -74,7 +74,7 @@
           v-if="list2.length < 1"
           class="absolute rounded-md top-1/2 left-1/2 transorm -translate-x-1/2 -translate-y-1/2 text-xl border-2 font-bold border-gray-400 border-dashed p-3"
         >
-          Drop your elements here
+          Drop your elements here - test
         </div>
       </div>
     </div>
