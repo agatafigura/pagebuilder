@@ -4,18 +4,6 @@
       <div class="list1 w-1/5 flex flex-col pl-5 items-start">
         <div class="flex pb-5 gap-x-2">
           <h2 class="font-bold text-xl">Elements</h2>
-          <CIcon
-            :icon="cilChevronBottom"
-            class="w-5 text-gray-500 hover:text-gray-600 cursor-pointer"
-            v-if="!menuOpen"
-            v-on:click="toggleMenu"
-          />
-          <CIcon
-            :icon="cilChevronTop"
-            class="w-5 text-gray-500 hover:text-gray-600 cursor-pointer"
-            v-if="menuOpen"
-            v-on:click="toggleMenu"
-          />
         </div>
         <draggable
           :group="{ name: 'test', pull: 'clone', put: false }"
@@ -25,7 +13,6 @@
           @change="log"
           :clone="cloneElement"
           class="flex flex-col gap-y-3 items-start"
-          v-if="menuOpen"
         >
           <template #item="{ element }">
             <div class="elements flex flex-col cursor-pointer">
@@ -44,13 +31,12 @@
           handle=".handle"
           group="test"
           item-key="id"
-          @change="generateID()"
-          @click="log()"
+          @change="log"
           id="drag"
           
         >
           <template #item="{ element }">
-            <div @click="setActive($event)">
+            <div>
               <div class="flex justify-between pr-4">
                 <CIcon
                   :icon="cilX"
@@ -74,7 +60,7 @@
 
         <div
           v-if="list2.length < 1"
-          class="absolute rounded-md top-1/2 left-1/2 transorm -translate-x-1/2 -translate-y-1/2 text-xl border-2 font-bold border-gray-400 border-dashed p-3"
+          class="absolute rounded-md top-1/2 left-1/2 text-xl border-2 font-bold border-gray-400 border-dashed p-3"
         >
           Drop your elements here
         </div>
@@ -106,53 +92,26 @@ export default {
     Slider,
   },
 
-  data() {
-    return {
-      value: 'Header'
-    }
-  },
-
   setup() {
-    const menuOpen = ref(null);
     const list1 = ref([]);
     const list2 = ref([]);
     const open = ref(false);
     const element = ref("");
-    const currentIndex = ref(null);
 
-    const toggleMenu = function () {
-      if (menuOpen.value === null) {
-        menuOpen.value = true;
-      } else {
-        menuOpen.value = null;
-      }
-      console.log(menuOpen.value);
-    };
-
-    const setActive = function(e) {
-      const HTMLelements = document.querySelector("#drag").children;
-      const index = Array.prototype.indexOf.call(HTMLelements, e.currentTarget)
-      currentIndex.value = index;
-    }
+    // const setActive = function(e) {
+    //   const HTMLelements = document.querySelector("#drag").children;
+    //   const index = Array.prototype.indexOf.call(HTMLelements, e.currentTarget)
+    //   currentIndex.value = index;
+    // }
 
     const sliderClose = function () {
       open.value = false;
-      console.log(currentIndex.value)
-      const compHTML = document.querySelector("#drag").children[currentIndex.value].lastElementChild.firstElementChild.outerHTML;
-      list2.value[currentIndex.value].components = compHTML;
+      // console.log(currentIndex.value)
+      // const compHTML = document.querySelector("#drag").children[currentIndex.value].lastElementChild.firstElementChild.outerHTML;
+      // list2.value[currentIndex.value].components = compHTML;
     }
 
-    const generateID = function () {
-      let ID = 0;
-      list2.value.forEach((element) => {
-        element.id = ID;
-        ID++;
-        // console.log(element.id);
-      });
-      setTimeout(1000, log());
-    };
-
-    const removeItem = function (id) {
+ const removeItem = function (id) {
       const newList = list2.value.filter((element) => {
         if (element.id !== id) {
           return element;
@@ -162,15 +121,25 @@ export default {
       list2.value = newList;
     };
 
-    const log = function () {
+    const log = function (evt) {
+      console.log("log", evt);
         document.querySelectorAll("[editable-element]").forEach((el) => {
           el.addEventListener("click", (e) => {
             open.value = true;
             element.value = e.target;
            });
-        })  
+        });
       }
     
+    // const generateID = function () {
+      // let ID = 0;
+      // list2.value.forEach((element) => {
+      //   element.id = ID;
+      //   ID++;
+      //   console.log("generateID", element.id);
+      // });
+      
+    // };
 
     const getFile = function () {
       let urls = ["1.html", "2.html"];
@@ -193,6 +162,10 @@ export default {
 
     const cloneElement = function (original) {
       const element = { ...original };
+      const currentDate = new Date();
+      const timestamp = currentDate.getTime();
+      element.id = timestamp;
+      console.log(element.id);
       return element;
     };
 
@@ -207,17 +180,16 @@ export default {
       cilChevronBottom,
       cilChevronTop,
       cilX,
-      menuOpen,
-      toggleMenu,
+      // menuOpen,
+      // toggleMenu,
       Slider,
       open,
       removeItem,
-      generateID,
       cloneElement,
       element,
       log,
       sliderClose,
-      setActive,
+      // setActive,
 
     };
   },
