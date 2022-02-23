@@ -45,9 +45,12 @@
           group="test"
           item-key="id"
           @change="generateID()"
+          @click="log()"
+          id="drag"
+          
         >
           <template #item="{ element }">
-            <div>
+            <div @click="setActive($event)">
               <div class="flex justify-between pr-4">
                 <CIcon
                   :icon="cilX"
@@ -61,10 +64,9 @@
                   class="w-6 handle cursor-pointer text-gray-500 hover:text-gray-700"
                 />
               </div>
-
               <section
-                @click="open = true"
                 v-html="element.components"
+    
               ></section>
             </div>
           </template>
@@ -74,11 +76,11 @@
           v-if="list2.length < 1"
           class="absolute rounded-md top-1/2 left-1/2 transorm -translate-x-1/2 -translate-y-1/2 text-xl border-2 font-bold border-gray-400 border-dashed p-3"
         >
-          Drop your elements here - test
+          Drop your elements here
         </div>
       </div>
     </div>
-    <Slider :open="open" @close-slider="open = false" />
+    <Slider :element="element" :open="open" @close-slider="sliderClose()" />
   </div>
 </template>
 
@@ -103,11 +105,20 @@ export default {
     CIcon,
     Slider,
   },
+
+  data() {
+    return {
+      value: 'Header'
+    }
+  },
+
   setup() {
     const menuOpen = ref(null);
     const list1 = ref([]);
     const list2 = ref([]);
     const open = ref(false);
+    const element = ref("");
+    const currentIndex = ref(null);
 
     const toggleMenu = function () {
       if (menuOpen.value === null) {
@@ -118,13 +129,27 @@ export default {
       console.log(menuOpen.value);
     };
 
+    const setActive = function(e) {
+      const HTMLelements = document.querySelector("#drag").children;
+      const index = Array.prototype.indexOf.call(HTMLelements, e.currentTarget)
+      currentIndex.value = index;
+    }
+
+    const sliderClose = function () {
+      open.value = false;
+      console.log(currentIndex.value)
+      const compHTML = document.querySelector("#drag").children[currentIndex.value].lastElementChild.firstElementChild.outerHTML;
+      list2.value[currentIndex.value].components = compHTML;
+    }
+
     const generateID = function () {
       let ID = 0;
       list2.value.forEach((element) => {
         element.id = ID;
         ID++;
-        console.log(element.id);
+        // console.log(element.id);
       });
+      setTimeout(1000, log());
     };
 
     const removeItem = function (id) {
@@ -136,6 +161,16 @@ export default {
       });
       list2.value = newList;
     };
+
+    const log = function () {
+        document.querySelectorAll("[editable-element]").forEach((el) => {
+          el.addEventListener("click", (e) => {
+            open.value = true;
+            element.value = e.target;
+           });
+        })  
+      }
+    
 
     const getFile = function () {
       let urls = ["1.html", "2.html"];
@@ -179,13 +214,18 @@ export default {
       removeItem,
       generateID,
       cloneElement,
+      element,
+      log,
+      sliderClose,
+      setActive,
+
     };
   },
   methods: {
-    log: function (e) {
-      window.console.log(e);
-    },
-  },
+    
+    }
+
+
 };
 </script>
 
