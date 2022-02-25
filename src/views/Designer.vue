@@ -66,7 +66,7 @@
         </div>
       </div>
     </div>
-    <Slider :element="element" :open="open" @close-slider="sliderClose()" />
+    <Slider :element="element" :open="open" @close-slider="open = false" />
   </div>
 </template>
 
@@ -97,19 +97,7 @@ export default {
     const list2 = ref([]);
     const open = ref(false);
     const element = ref("");
-
-    // const setActive = function(e) {
-    //   const HTMLelements = document.querySelector("#drag").children;
-    //   const index = Array.prototype.indexOf.call(HTMLelements, e.currentTarget)
-    //   currentIndex.value = index;
-    // }
-
-    const sliderClose = function () {
-      open.value = false;
-      // console.log(currentIndex.value)
-      // const compHTML = document.querySelector("#drag").children[currentIndex.value].lastElementChild.firstElementChild.outerHTML;
-      // list2.value[currentIndex.value].components = compHTML;
-    }
+      
 
  const removeItem = function (id) {
       const newList = list2.value.filter((element) => {
@@ -130,17 +118,7 @@ export default {
            });
         });
       }
-    
-    // const generateID = function () {
-      // let ID = 0;
-      // list2.value.forEach((element) => {
-      //   element.id = ID;
-      //   ID++;
-      //   console.log("generateID", element.id);
-      // });
-      
-    // };
-
+  
     const getFile = function () {
       let urls = ["1.html", "2.html"];
       let descriptions = ["Subscribe to newsletter", "Our offices"];
@@ -180,17 +158,12 @@ export default {
       cilChevronBottom,
       cilChevronTop,
       cilX,
-      // menuOpen,
-      // toggleMenu,
       Slider,
       open,
       removeItem,
       cloneElement,
       element,
-      log,
-      sliderClose,
-      // setActive,
-
+      log
     };
   },
   methods: {

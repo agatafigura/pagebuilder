@@ -285,6 +285,7 @@ export default {
     const changeTextColor = function (color) {
       colors.value.forEach(singleColor => {
         props.element.classList.remove('text-' + singleColor);
+        props.element.style.color = null;
       });
         props.element.classList.add(color);
     };
@@ -302,6 +303,7 @@ export default {
     const changeBgColor = function (color) {
       colors.value.forEach(singleColor => {
         props.element.classList.remove('bg-' + singleColor);
+        props.element.style.backgroundColor = null;
       });
         props.element.classList.add(color);
     }
