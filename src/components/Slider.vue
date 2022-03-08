@@ -58,21 +58,22 @@
                             <path class="w-5 h-5" :d="icon" />
                           </svg>
 
-                          <input
-                            class="icon-input border border-gray-600 rounded outline-none p-0.5"
+                          <input @focus="handleFocus($event)"
+                            class="placeholder:text-gray-500 icon-input border border-gray-600 rounded outline-none p-0.5"
+                            placeholder="http://example.com"
                           />
 
                           <div class="flex gap-x-2">
-                            <CIcon
-                              class="w-4 opacity-100 hover:opacity-70 cursor-pointer"
+                            <CIcon id="add"
+                              class="w-4 opacity-100 hover:opacity-70 hover:text-green-700 cursor-pointer"
                               :icon="cilCheckAlt"
                               @click="addIcon($event, icon)"
                             />
 
-                            <CIcon
-                              class="w-4 opacity-100 hover:opacity-70 cursor-pointer"
+                            <CIcon id="remove"
+                              class="w-4 hidden opacity-100 hover:opacity-70 hover:text-red-700 cursor-pointer"
                               :icon="cilTrash"
-                              @click="removeIcon(icon)"
+                              @click="removeIcon($event, icon)"
                             />
                           </div>
                         </div>
@@ -575,17 +576,24 @@ export default {
       props.element.style.backgroundColor = currentColor;
     };
 
+
     //adding SoMe icons
 
     const div = ref(null);
+    const TwitterInput = ref(true);
+    const TwitterAdd = ref(true);
+    const TwitterDelete = ref(false);
 
     const addIcon = function (e, icon) {
       const icons = document.querySelector("#icon-list");
-
+      const inputValue = e.currentTarget.parentElement.previousElementSibling.value;
+       const input = e.currentTarget.parentElement.previousElementSibling;
+      const iconAdd = e.currentTarget;
+      const iconRemove = e.currentTarget.nextElementSibling;
       console.log(`testing`, e.currentTarget.parentElement.previousElementSibling.value);
 
       if (
-        icons.getElementsByClassName(`${icon}`).length < 1 
+        icons.getElementsByClassName(`${icon}`).length < 1 && inputValue.length > 6
       ) {
         //div
         div.value = document.createElement("div");
@@ -633,14 +641,19 @@ export default {
         newIcon.appendChild(newPath);
         let d = newPath.getAttribute("d");
         div.value.className += " " + d;
-
-
+        // input.value = "";
+        input.style.display = "none";
+        iconAdd.style.display = "none";
+        iconRemove.style.display = "block";
       } else {
         console.log("cannot add");
       }
     };
 
-    const removeIcon = function (icon) {
+    const removeIcon = function (e, icon) {
+      const input = e.currentTarget.parentElement.previousElementSibling;
+       const iconAdd = e.currentTarget.previousElementSibling;
+      const iconRemove = e.currentTarget;
       let icons = document.querySelector("#icon-list");
       icons.querySelectorAll("div").forEach((div) => {
         let svg = div.querySelector("svg");
@@ -649,6 +662,10 @@ export default {
         if (d === icon) {
           console.log("found");
           path.parentElement.parentElement.parentElement.remove();
+          iconRemove.style.display = "none";
+          input.style.display = "block";
+          iconAdd.style.display = "block";
+
         }
       });
     };
@@ -681,8 +698,9 @@ export default {
       icons,
       div,
       cilCheckAlt,
-      cilTrash,
+      cilTrash
     };
+
   },
 };
 </script>

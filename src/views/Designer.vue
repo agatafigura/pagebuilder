@@ -29,7 +29,7 @@
         <button 
           @click="previewCurrentDesign"
           class="items-center bg-indigo-500 py-2 pl-3 pr-4 mr-5 mb-5 rounded-md shadow-sm text-white hover:bg-indigo-600">
-          Save
+          Preview
         </button>
       </div>
         <draggable
@@ -172,13 +172,6 @@ export default {
     const log = function (evt) {
       console.log("log", evt);
       console.log("change");
-
-      document.querySelectorAll("input").forEach((input) => {
-      input.addEventListener("focus", () => {
-        input.value = "http://"
-      })
-      })
-
 
       document.querySelectorAll("[editable-element]").forEach((el) => {
         el.addEventListener("click", (e) => {
