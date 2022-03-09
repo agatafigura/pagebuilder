@@ -58,37 +58,22 @@
                             <path class="w-5 h-5" :d="icon" />
                           </svg>
 
-<<<<<<< HEAD
                           <input
                             @click="handleClick($event)"
                             @keydown="handleKeyDown($event)"
                             class="border border-gray-600 rounded outline-none p-0.5"
-=======
-                          <input @focus="handleFocus($event)"
-                            class="placeholder:text-gray-500 icon-input border border-gray-600 rounded outline-none p-0.5"
->>>>>>> fedb64d23df0ef178ef33c74971049fe027af143
                             placeholder="http://example.com"
                           />
 
                           <div class="flex gap-x-2">
-<<<<<<< HEAD
                             <CIcon 
                               class="w-4 opacity-100 hover:opacity-70 hover:text-green-600 cursor-pointer"
-=======
-                            <CIcon id="add"
-                              class="w-4 opacity-100 hover:opacity-70 hover:text-green-700 cursor-pointer"
->>>>>>> fedb64d23df0ef178ef33c74971049fe027af143
                               :icon="cilCheckAlt"
                               @click="addIcon($event, icon)"
                             />
 
-<<<<<<< HEAD
                             <CIcon 
                               class="w-4 opacity-100 hover:opacity-70 hover:text-red-600 cursor-pointer hidden"
-=======
-                            <CIcon id="remove"
-                              class="w-4 hidden opacity-100 hover:opacity-70 hover:text-red-700 cursor-pointer"
->>>>>>> fedb64d23df0ef178ef33c74971049fe027af143
                               :icon="cilTrash"
                               @click="removeIcon($event, icon)"
                             />
@@ -617,7 +602,6 @@ export default {
 
     const addIcon = function (e, icon) {
       const icons = document.querySelector("#icon-list");
-<<<<<<< HEAD
       const inputField = e.currentTarget.parentElement.previousElementSibling;
       const iconAdd = e.currentTarget;
       const iconRemove = e.currentTarget.nextElementSibling;
@@ -627,16 +611,6 @@ export default {
       if (
         icons.getElementsByClassName(`${icon}`).length < 1 &&
         inputValue.length > 7
-=======
-      const inputValue = e.currentTarget.parentElement.previousElementSibling.value;
-       const input = e.currentTarget.parentElement.previousElementSibling;
-      const iconAdd = e.currentTarget;
-      const iconRemove = e.currentTarget.nextElementSibling;
-      console.log(`testing`, e.currentTarget.parentElement.previousElementSibling.value);
-
-      if (
-        icons.getElementsByClassName(`${icon}`).length < 1 && inputValue.length > 6
->>>>>>> fedb64d23df0ef178ef33c74971049fe027af143
       ) {
         //create div and append in list
         div.value = document.createElement("div");
@@ -775,14 +749,10 @@ export default {
       icons,
       div,
       cilCheckAlt,
-<<<<<<< HEAD
       cilTrash,
       handleKeyDown,
       handleInput,
       handleClick,
-=======
-      cilTrash
->>>>>>> fedb64d23df0ef178ef33c74971049fe027af143
     };
 
   },
