@@ -29,7 +29,7 @@
         <button 
           @click="previewCurrentDesign"
           class="items-center bg-indigo-500 py-2 pl-3 pr-4 mr-5 mb-5 rounded-md shadow-sm text-white hover:bg-indigo-600">
-          Save
+          Preview
         </button>
       </div>
         <draggable
@@ -137,7 +137,6 @@ export default {
     };
 
     const saveCurrentDesign = function () {
-      console.log("works")
       // html array
       const allAddedHtmlComponents = ref([]);
       // start saving each page
@@ -184,15 +183,12 @@ export default {
         el.addEventListener("click", (e) => {
           open.value = true;
           element.value = e.target;
-          console.log(`iconlistvalue`, iconList.value);
-          console.log(`editiconvalue`, editIcon.value);
         });
       });
 
       document.querySelector("[iconList]").addEventListener("click", () => {
         open.value = true;
         iconList.value = true;
-        console.log(iconList.value);
       });
 
     

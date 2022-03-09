@@ -52,31 +52,46 @@
                         <div
                           v-for="icon in icons"
                           :key="icon"
-                          class="flex gap-x-3 w-full mt-3"
+                          class="flex gap-x-1 w-full mt-3"
                         >
                           <svg class="fill-current text-gray-600 w-7 h-7">
                             <path class="w-5 h-5" :d="icon" />
                           </svg>
 
                           <input
-                            class="icon-input border border-gray-600 rounded outline-none p-0.5"
+                            @click="handleClick($event)"
+                            @keydown="handleKeyDown($event)"
+                            class="border border-gray-600 rounded outline-none p-0.5"
+                            placeholder="http://example.com"
                           />
 
                           <div class="flex gap-x-2">
-                            <CIcon
-                              class="w-4 opacity-100 hover:opacity-70 cursor-pointer"
+                            <CIcon 
+                              class="w-4 opacity-100 hover:opacity-70 hover:text-green-600 cursor-pointer"
                               :icon="cilCheckAlt"
                               @click="addIcon($event, icon)"
                             />
 
-                            <CIcon
-                              class="w-4 opacity-100 hover:opacity-70 cursor-pointer"
+                            <CIcon 
+                              class="w-4 opacity-100 hover:opacity-70 hover:text-red-600 cursor-pointer hidden"
                               :icon="cilTrash"
-                              @click="removeIcon(icon)"
+                              @click="removeIcon($event, icon)"
                             />
                           </div>
                         </div>
                       </div>
+                    </div>
+
+                    <div class="mb-1" v-if="!iconList">
+                      <label
+                        class="block text-md font-bold text-gray-900 dark:text-gray-100"
+                      >
+                        Edit text
+                      </label>
+                      <input
+                        @input="handleInput($event)"
+                        class="dark:text-gray-100 dark:bg-gray-dark dark:border-gray-600 mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                      />
                     </div>
 
                     <div class="mb-4" v-if="!iconList">
@@ -313,6 +328,7 @@ export default {
       required: false,
     },
   },
+
   setup(props) {
     //font size
     const fontSize = ref("");
@@ -579,78 +595,126 @@ export default {
 
     const div = ref(null);
 
+
     const addIcon = function (e, icon) {
       const icons = document.querySelector("#icon-list");
-
-      console.log(`testing`, e.currentTarget.parentElement.previousElementSibling.value);
-
+      const inputField = e.currentTarget.parentElement.previousElementSibling;
+      const iconAdd = e.currentTarget;
+      const iconRemove = e.currentTarget.nextElementSibling;
+      const inputValue = inputField.value;
+      
+      //check if icon is added and validate link
       if (
-        icons.getElementsByClassName(`${icon}`).length < 1 
+        icons.getElementsByClassName(`${icon}`).length < 1 &&
+        inputValue.length > 7
       ) {
-        //div
+        //create div and append in list
         div.value = document.createElement("div");
-        console.log(div.value, icons);
         div.value.classList = "w-10 h-10 flex justify-center items-center";
         icons.appendChild(div.value);
 
-        //wrapping div in a link
-          var parent = div.value.parentNode;
-          var alink = document.createElement("a");
-          parent.insertBefore(alink, div.value);
-          alink.appendChild(div.value);
+        //wrap div in an anchor tag
+        var parent = div.value.parentNode;
+        var alink = document.createElement("a");
+        parent.insertBefore(alink, div.value);
+        alink.appendChild(div.value);
 
-          alink.addEventListener("click", (e) => {
-            e.preventDefault();
-          })
+        //make anchor tags unclickable
+        alink.addEventListener("click", (e) => {
+          e.preventDefault();
+        });
 
-        //adding href 
-          alink.setAttribute("href", e.currentTarget.parentElement.previousElementSibling.value);
-          alink.setAttribute("target", "_blank");
-          console.log(`test`, alink.getAttribute("href"));
+        //add href
+        alink.setAttribute(
+          "href",
+          e.currentTarget.parentElement.previousElementSibling.value
+        );
+        alink.setAttribute("target", "_blank");
+        console.log(`href is:`, alink.getAttribute("href"));
 
-        //svg
+        //create svg and append to div
         const newIcon = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "svg"
         );
         newIcon.setAttributeNS(null, "viewBox", "0 0 24 24");
-        newIcon.classList.add("fill-current");
-        newIcon.classList.add("text-gray-600");
-        newIcon.classList.add("w-7");
-        newIcon.classList.add("h-7");
+        newIcon.classList = "fill-current text-gray-600 w-7 h-7";
         newIcon.setAttributeNS(null, "editable-element", "");
-        console.log(newIcon);
         div.value.appendChild(newIcon);
 
-        //path
+        //create path and append to svg
         const newPath = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "path"
         );
         newPath.setAttributeNS(null, "d", icon);
-
-        console.log(newPath);
         newIcon.appendChild(newPath);
         let d = newPath.getAttribute("d");
         div.value.className += " " + d;
 
+        //remove input field and icon
+        iconAdd.style.display = "none";
+        inputField.style.display = "none";
+        iconRemove.style.display = "block";
 
-      } else {
-        console.log("cannot add");
+        //set icon as added
+
+        //show error
+      } else if (inputValue.length <= 7) {
+        inputField.classList.add("border-red-600");
+        inputField.classList.add("animate-shake");
       }
     };
 
-    const removeIcon = function (icon) {
-      let icons = document.querySelector("#icon-list");
+    //remove icons
+    const removeIcon = function (e, icon) {
+      const icons = document.querySelector("#icon-list");
+      const inputField = e.currentTarget.parentElement.previousElementSibling;
+      const iconAdd = e.currentTarget.previousElementSibling;
+      const iconRemove = e.currentTarget;
+
+      //for each icon
       icons.querySelectorAll("div").forEach((div) => {
         let svg = div.querySelector("svg");
         let path = svg.querySelector("path");
         let d = path.getAttribute("d");
         if (d === icon) {
-          console.log("found");
+          //remove div
           path.parentElement.parentElement.parentElement.remove();
+          //add input field and icon
+          iconRemove.style.display = "none";
+          iconAdd.style.display = "block";
+          inputField.style.display = "block";
+          inputField.value = "";
         }
       });
+    };
+
+    
+
+    //add value to input field
+    const handleClick = function (e) {
+      const inputField = e.currentTarget;
+      if (inputField.value === "") {
+        inputField.value = "http://";
+      }
+    };
+
+    //remove error
+    const handleKeyDown = function (e) {
+      const inputField = e.currentTarget;
+      const inputValue = inputField.value;
+      if (inputValue.length >= 7) {
+        inputField.classList.remove("border-red-600");
+        inputField.classList.remove("animate-shake");
+        inputField.classList.add("border-gray-600");
+      }
+    };
+
+    //edit text
+    const handleInput = function (e) {
+      const inputValue = e.currentTarget.value;
+      props.element.textContent = inputValue;
     };
 
     return {
@@ -682,8 +746,23 @@ export default {
       div,
       cilCheckAlt,
       cilTrash,
+      handleKeyDown,
+      handleInput,
+      handleClick,
     };
   },
 };
 </script>
 
+
+<style>
+
+  .hide {
+    display: none;
+  }
+
+  .show {
+    display: block;
+  }
+
+</style>
