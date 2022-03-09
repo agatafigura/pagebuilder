@@ -172,13 +172,6 @@ export default {
       console.log("log", evt);
       console.log("change");
 
-      document.querySelectorAll("input").forEach((input) => {
-      input.addEventListener("focus", () => {
-        input.value = "http://"
-      })
-      })
-
-
       document.querySelectorAll("[editable-element]").forEach((el) => {
         el.addEventListener("click", (e) => {
           open.value = true;
