@@ -67,9 +67,12 @@
         >
           Drop your elements here
         </div>
+
+        
+
       </div>
     </div>
-    <Slider :element="element" :editIcon="editIcon" :icons="icons" :iconList="iconList" :open="open" @close-slider="open = false, iconList = false, editIcon = false" />
+    <Slider :element="element" :icons="icons" :iconList="iconList" :open="open" @close-slider="open = false, iconList = false, editIcon = false" />
   </div>
 </template>
 
@@ -83,6 +86,7 @@ import {
   cilChevronBottom,
   cilChevronTop,
   cilX,
+  cilCart
 } from "@coreui/icons";
 import Slider from "../components/Slider.vue";
 
@@ -101,8 +105,8 @@ export default {
     const list2 = ref([]);
     const open = ref(false);
     const iconList = ref(false);
-    const editIcon = ref(false);
     const element = ref("");
+    const menuItem = ref("");
     const icons = ref("");
     const router = useRouter();
     const savedPageVersionsLocalStorage = ref(['localStorageSavedHTML1', 'localStorageSavedHTML2', 'localStorageSavedHTML3', 'localStorageSavedHTML4', 'localStorageSavedHTML5']);
@@ -179,17 +183,36 @@ export default {
         });
       });
 
+     if (document.querySelector("#header") !== null) {
+
+      document.querySelectorAll("[menu-item]").forEach((el) => {
+        el.addEventListener("click", () => {
+          el.classList = "text-indigo-600 font-bold cursor-pointer";
+          const parent = el.parentElement;
+          const children = parent.children;
+          console.log(children)
+          children.forEach((li) => {
+            if (li !== el) {
+              li.classList = "";
+            }
+          });
+        });
+      });
+     }
+
+      if (document.querySelector("#footer") !== null) {
+
       document.querySelector("[iconList]").addEventListener("click", () => {
         open.value = true;
         iconList.value = true;
       });
 
-    
+      }
     };
 
     const getFile = function () {
-      let urls = ["1.html", "2.html", "3.html"];
-      let descriptions = ["Subscribe to newsletter", "Our offices", "Footer"];
+      let urls = ["1.html", "2.html", "3.html", "4.html"];
+      let descriptions = ["Subscribe to newsletter", "Our offices", "Footer", "Header"];
 
       try {
         urls.forEach(async (url, i) => {
@@ -225,6 +248,7 @@ export default {
       cilElevator,
       cilChevronBottom,
       cilChevronTop,
+      cilCart,
       cilX,
       Slider,
       open,
@@ -249,12 +273,6 @@ export default {
   border-radius: 2px;
   cursor: pointer;
 }
-
-/* [editable-icon]:hover {
-  box-shadow: inset 0 0 0 1px red, 0 0 0 2px red;
-  border-radius: 2px;
-  cursor: pointer;
-} */
 
 
 .elements:hover {

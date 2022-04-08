@@ -39,6 +39,7 @@
                     </div>
                   </div>
                 </div>
+                
 
                 <div class="mt-6 relative flex-1 px-4 sm:px-6">
                   <div class="flex flex-col gap-y-5">
@@ -61,7 +62,8 @@
                             @keydown="handleKeyDown($event)"
                             class="border border-gray-600 rounded outline-none p-0.5"
                             placeholder="http://example.com"
-                            v-model="test"
+                            v-model="SoMeIcons.twitter"
+                            data-icon="twitter"
                           />
 
                           <div class="flex gap-x-2">
@@ -90,7 +92,8 @@
                             @keydown="handleKeyDown($event)"
                             class="border border-gray-600 rounded outline-none p-0.5"
                             placeholder="http://example.com"
-                             
+                            v-model="SoMeIcons.facebook"
+                            data-icon="facebook"
                           />
 
                           <div class="flex gap-x-2">
@@ -119,7 +122,8 @@
                             @keydown="handleKeyDown($event)"
                             class="border border-gray-600 rounded outline-none p-0.5"
                             placeholder="http://example.com"
-                            
+                            v-model="SoMeIcons.linkedin"
+                            data-icon="linkedin"
                           />
 
                           <div class="flex gap-x-2">
@@ -148,7 +152,8 @@
                             @keydown="handleKeyDown($event)"
                             class="border border-gray-600 rounded outline-none p-0.5"
                             placeholder="http://example.com"
-                             
+                            v-model="SoMeIcons.instagram"
+                            data-icon="instagram"
                           />
 
                           <div class="flex gap-x-2">
@@ -177,7 +182,8 @@
                             @keydown="handleKeyDown($event)"
                             class="border border-gray-600 rounded outline-none p-0.5"
                             placeholder="http://example.com"
-                             
+                            v-model="SoMeIcons.youtube"
+                            data-icon="youtube"
                           />
 
                           <div class="flex gap-x-2">
@@ -206,7 +212,8 @@
                             @keydown="handleKeyDown($event)"
                             class="border border-gray-600 rounded outline-none p-0.5"
                             placeholder="http://example.com"
-                             
+                            v-model="SoMeIcons.google"
+                            data-icon="google"
                           />
 
                           <div class="flex gap-x-2">
@@ -383,7 +390,7 @@
                         />
                       </div>
 
-                      <div class="grid grid-cols-11 gap-1">
+                      <div class="grid grid-cols-10 gap-1 w-3/4">
                         <div
                           v-for="color in colors"
                           :key="color"
@@ -414,7 +421,7 @@
                         />
                       </div>
 
-                      <div class="grid grid-cols-11 gap-1">
+                      <div class="grid grid-cols-10 gap-1 w-3/4">
                         <div
                           v-for="color in colors"
                           :key="color"
@@ -468,13 +475,18 @@ export default {
       type: Boolean,
       required: false,
     },
-    editIcon: {
-      required: false,
-    },
   },
 
   setup(props) {
-    const test = ref(null);
+    const SoMeIcons = ref({
+        twitter: "",
+        facebook: "",
+        linkedin: "",
+        instagram: "",
+        youtube: "",
+        google: ""
+    });
+    
     //font size
     const fontSize = ref("");
     const sizes = ref([
@@ -537,9 +549,7 @@ export default {
 
     //colors
     const colors = ref([
-      "tranparent",
-      "white",
-      "black",
+      
       "gray-50",
       "gray-100",
       "gray-200",
@@ -620,6 +630,8 @@ export default {
       "pink-700",
       "pink-800",
       "pink-900",
+      "white",
+      "black",
     ]);
     const customTextColor = ref("#ffffff");
     const customBgColor = ref("#ffffff");
@@ -736,8 +748,7 @@ export default {
       props.element.style.backgroundColor = currentColor;
     };
 
-
-    //adding SoMe icons
+    //add SoMe icons
 
     const div = ref(null);
 
@@ -748,6 +759,7 @@ export default {
       const svg = e.currentTarget.parentElement.previousElementSibling.previousElementSibling;
       const path = svg.querySelector("path");
       const d = path.getAttribute("d");
+      const socialMedia = inputField.dataset.icon;
       
       //check if icon is added and validate link
       if (
@@ -763,6 +775,7 @@ export default {
         //wrap div in an anchor tag
         var parent = div.value.parentNode;
         var alink = document.createElement("a");
+        alink.dataset.icon = socialMedia;
         parent.insertBefore(alink, div.value);
         alink.appendChild(div.value);
 
@@ -797,7 +810,6 @@ export default {
         newPath.setAttributeNS(null, "d", d);
         newIcon.appendChild(newPath);
         div.value.className += " " + d;
-        console.log(test.value);
         
 
         //show error
@@ -809,26 +821,20 @@ export default {
 
     //remove icons
     const removeIcon = function (e) {
-      const inputField = e.currentTarget.parentElement.previousElementSibling;
       const icons = document.querySelector("#icon-list");
-      const svg = e.currentTarget.parentElement.previousElementSibling.previousElementSibling;
-      const path = svg.querySelector("path");
-      const d = path.getAttribute("d");
+      const inputField = e.currentTarget.parentElement.previousElementSibling;
+      const socialMedia = inputField.dataset.icon;
 
       //for each icon
-      icons.querySelectorAll("div").forEach((div) => {
-        let thisSvg = div.querySelector("svg");
-        let thisPath = thisSvg.querySelector("path");
-        let thisD = thisPath.getAttribute("d");
-        if (thisD === d) {
+      icons.querySelectorAll("a").forEach((anchor) => {
+
+        if (anchor.dataset.icon === socialMedia) {
           //remove div
-          thisPath.parentElement.parentElement.parentElement.remove();
-          console.log(test.value);
+          anchor.remove();
+          SoMeIcons.value[socialMedia] = "";
         }
       });
     };
-
-    
 
     //add value to input field
     const handleClick = function (e) {
@@ -887,6 +893,7 @@ export default {
       handleKeyDown,
       handleInput,
       handleClick,
+      SoMeIcons,
     };
 
   },
